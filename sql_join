@@ -1,0 +1,52 @@
+--	Retrieve Data: Get the Product ID, Product Name, Sales Value, and Profit.
+SELECT product_id,sales, profit
+FROM public.sales;
+--Join Method: Use an INNER JOIN to combine the product and sales tables based on 
+--the Product ID column as the common key
+SELECT *
+FROM
+product INNER JOIN sales
+ON product.product_id=sales.product_id;
+--Customer Sales Summary: Fetch the Customer Name and City 
+--along with the total sales amount for each customer.
+SELECT customer_name, city, SUM(sales)
+FROM
+customer INNER JOIN sales
+ON customer.customer_id=sales.customer_id
+GROUP BY customer.customer_id;
+--	1. Calculate the total sales for each state using 
+--the `customer_20_60` and `sales_2015` tables. Remember to utilize joins and the GROUP BY command.
+select state, SUM(sales) AS tot_sales
+FROM customers_20_60 LEFT JOIN sales_2015
+ON customers_20_60.customer_id=sales_2015.customer_id
+GROUP BY state;
+
+
+--2.	Retrieve data that includes the product ID, product name, category, 
+--total sales value for each product, and total quantity sold. (Make sure to use the `sales` and `product` tables.)
+SELECT sales.product_id, product_name, category, SUM(sales) AS tot_sale, SUM(quantity) AS tot_quant
+FROM sales RIGHT JOIN product
+ON sales.product_id=product.product_id
+GROUP BY sales.product_id,product_name,category;
+
+
+
+
+--Retrieve the names of all customer IDs from the sales table along with the sales information for each customer listed in the customer table. Display both customer IDs in separate columns.
+
+
+SELECT customer_name,sales,customer.customer_id AS customer_T1,sales.customer_id AS customer_T2, sales.*
+FROM customer FULL OUTER JOIN sales
+on customer.customer_id=sales.customer_id;
+
+--Retrieve the customers from the customer table who have total sales exceeding 1000 and reside in 'New York City,' along with those who live in 'Mesa' and have total sales below 500.
+
+SELECT customer_name,SUM(sales) AS tot_sales,city
+FROM customer AS c LEFT JOIN sales AS s
+ON c.customer_id=s.customer_id
+GROUP BY c.customer_id,city
+HAVING (SUM(sales)>1000 AND city='New York City') OR (SUM(sales)<500 AND city='Mesa') ;
+
+
+
+
